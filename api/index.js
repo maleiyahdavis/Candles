@@ -1,4 +1,9 @@
-const apiRouter = require('express').Router();
+const express = require('express')
+const apiRouter = express.Router();
+const cors = require('cors');
+const app = express();
+
+app.use(cors());
 
 apiRouter.get('/', (req, res, next) => {
   res.send({
@@ -12,6 +17,21 @@ apiRouter.get('/health', (req, res, next) => {
   });
 });
 
-// place your routers here
+
+//ROUTER /api/users
+const usersRouter = require('./user');
+apiRouter.use('/user', usersRouter);
+
+//ROUTER /api/scents
+const scentsRouter = require('./scent_names');
+apiRouter.use('/scent_names', scentsRouter);
+
+//ROUTER /api/candles
+const candlesRouter = require('./candles');
+apiRouter.use('/candles', candlesRouter);
+
+//ROUTER /api/reviews
+const reviewsRouter = require('./reviews');
+apiRouter.use('/reviews', reviewsRouter);
 
 module.exports = apiRouter;

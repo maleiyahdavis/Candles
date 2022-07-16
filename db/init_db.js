@@ -51,7 +51,7 @@ async function buildTables() {
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
-        price INTEGER,
+        price TEXT NOT NULL,
         "scent_nameId" INTEGER REFERENCES scent_name(id) NOT NULL
       );`);
       console.log("3")
@@ -109,13 +109,14 @@ async function populateInitialScent_Names() {
   try{
     console.log("Starting to create scent!");
 
-    const scent_namesToCreate = [
+    const scent_namesToCreate = [ 
       {name:"Flowers"}, //1
       {name:"Fruity/Food"}, //2
       {name:"Seasonal"}, //3
       {name:"Fresh"}, //4
       {name:"Earthy"} //5
     ];
+    //console.log(scent_namesToCreate);
 
     const scent_names = await Promise.all(scent_namesToCreate.map((createScent_Name)));
     console.log("Scent Name Created:", scent_names);
@@ -188,7 +189,7 @@ async function populateInitialUser_Reviews() {
       {name:"Fresh Cut Roses", description:"Average at best.", candleReviewedId:8, userReviewingId:2}
     ];
 
-    const userReviews = Promise.all(user_reviewsToCreate.map(createReview));
+    const userReviews = await Promise.all(user_reviewsToCreate.map(createReview));
     console.log("Reviews created:", userReviews);
     console.log("Finished creating reviews!");
   } catch(error){
