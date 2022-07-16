@@ -11,6 +11,10 @@ server.use(cors());
 const morgan = require('morgan');
 server.use(morgan('dev'));
 
+//body parser
+const bodyParser = require('body-parser')
+server.use(bodyParser.json());
+
 // handle application/json requests
 server.use(express.json());
 
@@ -36,6 +40,7 @@ const PORT = process.env.PORT || 4000;
 const handle = server.listen(PORT, async () => {
   console.log(`Server is running on ${PORT}!`);
 
+
   try {
     await client.connect();
     console.log('Database is open for business!');
@@ -44,5 +49,10 @@ const handle = server.listen(PORT, async () => {
   }
 });
 
+server.use((req, res, next) => {
+  console.log("<____Body Logger START____>");
+  console.log(req.body);
+  console.log("<_____Body Logger END_____>");
+});
 // export server and handle for routes/*.test.js
 module.exports = { server, handle };

@@ -24,5 +24,16 @@ module.exports = {
 };
 
 async function getAllUsers() {
+  try{
+    const {rows:user} = await client.query(`
+    SELECT *
+    FROM USERS
+    ;`)
+
+    return user
+  } catch(error) {
+    throw error
+  }
   /* this adapter should fetch a list of users from your db */
 }
+
