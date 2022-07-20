@@ -22,7 +22,8 @@ async function buildTables() {
     client.connect();
     console.log("Dropping tables...");
     await client.query(`
-      DROP TABLE IF EXISTS cart;
+      DROP TABLE IF EXISTS order_products;
+      DROP TABLE IF EXISTS orders;
       DROP TABLE IF EXISTS reviews;
       DROP TABLE IF EXISTS candles;
       DROP TABLE IF EXISTS scent_name;
@@ -36,25 +37,32 @@ async function buildTables() {
     await client.query(`
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
+        "firstName" VARCHAR(255) NOT NULL,
+        "lastName" VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        "imageURL" TEXT NOT NULL DEFAULT 'https://pic.onlinewebfonts.com/svg/img_568656.png',
         username VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        "isAdmin" BOOLEAN NOT NULL DEFAULT FALSE
       );`);
-      console.log("1")
+      
       await client.query(`
         CREATE TABLE scent_name (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL);
       `);
-      console.log("2")
+      
       await client.query(`
       CREATE TABLE candles (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
         price TEXT NOT NULL,
+        "imageURL" TEXT NOT NULL,
+        "inStock" TEXT NOT NULL,
         "scent_nameId" INTEGER REFERENCES scent_name(id) NOT NULL
       );`);
-      console.log("3")
+     
       await client.query(`
       CREATE TABLE reviews (
         id SERIAL PRIMARY KEY,
@@ -63,14 +71,27 @@ async function buildTables() {
         "candleReviewedId" INTEGER REFERENCES candles(id) NOT NULL,
         "userReviewingId" INTEGER REFERENCES users(id) NOT NULL
       );`);
-      console.log("4")
+      
       await client.query(`
-      CREATE TABLE cart (
+      CREATE TABLE orders (
         id SERIAL PRIMARY KEY,
-        "candlesAddedId" INTEGER REFERENCES candles(id),
+        status TEXT NOT NULL DEFAULT 'created',
         "userId" INTEGER REFERENCES users(id),
-        quantity INTEGER
-      );`)
+        "datePlaced" DATE NOT NULL
+      );
+      `)
+
+      await client.query(`
+      CREATE TABLE order_products (
+        id SERIAL PRIMARY KEY,
+        "productId" INTEGER REFERENCES candles(id),
+        "orderId" INTEGER REFERENCES orders(id),
+        price TEXT NOT NULL,
+        quantity INTEGER DEFAULT 1
+      );
+      `)
+
+      
     
     console.log("Finished creating tables...");
     // build tables in correct order
@@ -88,10 +109,10 @@ async function populateInitialUsers() {
     // const user1 = await User.createUser({ ...user info goes here... })
 
     const usersToCreate = [
-      {username: "Jeremy", password: "jeremy89"}, //1
-      {username: "Maleiyah", password: "maxwell"}, //2
-      {username: "Anna", password: "annabanana22"}, //3
-      {username: "Kiara", password: "Bates100"} //4
+      {firstName: "Jeremy", lastName: "", email: "1", imageURL: "", username: "Jeremy", password: "jeremy89", isAdmin: true}, //1
+      {firstName: "Maleiyah", lastName: "", email: "2", imageURL: "", username: "Maleiyah", password: "maxwell", isAdmin: false}, //2
+      {firstName: "Anna", lastName: "", email: "3", imageURL: "", username: "Anna", password: "annabanana22", isAdmin: false}, //3
+      {firstName: "Kiara", lastName: "", email: "4", imageURL: "", username: "Kiara", password: "Bates100", isAdmin: false} //4
     ];
 
     const users = await Promise.all(usersToCreate.map(createUser));
@@ -132,37 +153,37 @@ async function populateInitialCandles() {
     console.log("Starting to create candles...");
 
     const candlesToCreate = [
-      {name:"Dark Mode", description:"", price:"", scent_nameId:5}, //should scentname be a string or integer?
-      {name: "BooleanBerry", description:"", price:"", scent_nameId:2},
-      {name: "Byte sized Cookies", description:"", price:"", scent_nameId:2},
-      {name: "Cup of Java", description:"", price:"", scent_nameId:2},
-      {name: "npm fart", description:"", price:"", scent_nameId:5},
-      {name: "Debugger Daisies", description:"", price:"", scent_nameId:1},
-      {name: "Error 404", description:"", price:"", scent_nameId: 5},
-      {name:"Roses", description:"", price:"", scent_nameId:1},
-      {name:"Costal Breeze", description:"", price:"", scent_nameId:4},
-      {name:"Euchalyptus", description:"", price:"", scent_nameId:4},
-      {name:"Christmas Wreath", description:"", price:"", scent_nameId:3},
-      {name:"Pine Cones", description:"", price:"", scent_nameId:3},
-      {name:"Pumpkin Spice", description:"", price:"", scent_nameId:3},
-      {name:"Apple Crisp", description:"", price:"", scent_nameId:3},
-      {name:"Sandlewood", description:"", price:"", scent_nameId:5},
-      {name:"Cedar Forest", description:"", price:"", scent_nameId:5},
-      {name:"Spring Garden", description:"", price:"", scent_nameId:1},
-      {name:"Pineapple", description:"", price:"", scent_nameId:2},
-      {name:"Citrus Spritz", description:"", price:"", scent_nameId:2},
-      {name:"Gingerbread", description:"", price:"", scent_nameId:3},
-      {name:"Birthday Cake", description:"", price:"", scent_nameId:3},
-      {name:"Summer's Breeze", description:"", price:"", scent_nameId:4},
-      {name:"Firecrackers", description:"", price:"", scent_nameId:3},
-      {name:"Vanilla Bean", description:"", price:"", scent_nameId:2},
-      {name:"Cherry Blossum", description:"", price:"", scent_nameId:1},
-      {name:"Peach Tea", description:"", price:"", scent_nameId:2},
-      {name:"Lemongrass", description:"", price:"", scent_nameId:4},
-      {name:"Fresh Rainfall", description:"", price:"", scent_nameId:5},
-      {name:"Wildflower", description:"", price:"", scent_nameId:1},
-      {name:"Lilac", description:"", price:"", scent_nameId:1},
-      {name:"Mahogany Teakwood", description:"", price:"", scent_nameId:5},
+      {name:"Dark Mode", description:"", price:"",imageURL: "",inStock: "",scent_nameId:5}, //should scentname be a string or integer?
+      {name: "BooleanBerry", description:"", price:"", imageURL: "",inStock: "", scent_nameId:2},
+      {name: "Byte sized Cookies", description:"", price:"", imageURL: "",inStock: "", scent_nameId:2},
+      {name: "Cup of Java", description:"", price:"", imageURL: "", inStock: "",scent_nameId:2},
+      {name: "npm fart", description:"", price:"", imageURL: "",inStock: "", scent_nameId:5},
+      {name: "Debugger Daisies", description:"", price:"", imageURL: "",inStock: "", scent_nameId:1},
+      {name: "Error 404", description:"", price:"", imageURL: "", inStock: "",scent_nameId: 5},
+      {name:"Roses", description:"", price:"", imageURL: "",inStock: "", scent_nameId:1},
+      {name:"Costal Breeze", description:"", price:"", imageURL: "",inStock: "", scent_nameId:4},
+      {name:"Euchalyptus", description:"", price:"", imageURL: "", inStock: "",scent_nameId:4},
+      {name:"Christmas Wreath", description:"", price:"", imageURL: "",inStock: "", scent_nameId:3},
+      {name:"Pine Cones", description:"", price:"", imageURL: "",inStock: "", scent_nameId:3},
+      {name:"Pumpkin Spice", description:"", price:"", imageURL: "", inStock: "",scent_nameId:3},
+      {name:"Apple Crisp", description:"", price:"", imageURL: "", inStock: "",scent_nameId:3},
+      {name:"Sandlewood", description:"", price:"", imageURL: "",inStock: "", scent_nameId:5},
+      {name:"Cedar Forest", description:"", price:"", imageURL: "",inStock: "", scent_nameId:5},
+      {name:"Spring Garden", description:"", price:"", imageURL: "", inStock: "",scent_nameId:1},
+      {name:"Pineapple", description:"", price:"", imageURL: "",inStock: "", scent_nameId:2},
+      {name:"Citrus Spritz", description:"", price:"", imageURL: "", inStock: "",scent_nameId:2},
+      {name:"Gingerbread", description:"", price:"", imageURL: "",inStock: "", scent_nameId:3},
+      {name:"Birthday Cake", description:"", price:"", imageURL: "", inStock: "",scent_nameId:3},
+      {name:"Summer's Breeze", description:"", price:"", imageURL: "", inStock: "",scent_nameId:4},
+      {name:"Firecrackers", description:"", price:"", imageURL: "", imageURL: "",inStock: "", scent_nameId:3},
+      {name:"Vanilla Bean", description:"", price:"", imageURL: "",inStock: "", scent_nameId:2},
+      {name:"Cherry Blossum", description:"", price:"", imageURL: "",inStock: "", scent_nameId:1},
+      {name:"Peach Tea", description:"", price:"", imageURL: "", inStock: "",scent_nameId:2},
+      {name:"Lemongrass", description:"", price:"", imageURL: "", inStock: "",scent_nameId:4},
+      {name:"Fresh Rainfall", description:"", price:"", imageURL: "",inStock: "", scent_nameId:5},
+      {name:"Wildflower", description:"", price:"", imageURL: "",inStock: "", scent_nameId:1},
+      {name:"Lilac", description:"", price:"", imageURL: "",inStock: "", scent_nameId:1},
+      {name:"Mahogany Teakwood", description:"", price:"", imageURL: "",inStock: "", scent_nameId:5},
 //flowers, fruity/food, seasonal, fresh, earthy/woody
     ];
 
