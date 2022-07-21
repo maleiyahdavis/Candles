@@ -1,14 +1,14 @@
 // grab our db client connection to use with our adapters
 const client = require('../client');
 
-async function createUser({username, password}) {
+async function createUser({firstName, lastName, email, imageURL, username, password, isAdmin}) {
   try{
     const {rows:[user]} = await client.query(`
-        INSERT INTO users(username, password)
-        VALUES ($1, $2)
+        INSERT INTO users("firstName", "lastName", email, "imageURL", username, password, "isAdmin")
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         ON CONFLICT (username) DO NOTHING
         RETURNING *;`,
-        [username, password]);
+        [firstName, lastName, email, imageURL, username, password, isAdmin]);
 
         return user;
   } catch(error){
