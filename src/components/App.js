@@ -29,15 +29,15 @@ const App = () => {
     <div className="app-container">
       <h1>Hello, World!</h1>
       <p>API Status: {APIHealth}</p>
-      <Route path="/candles"><RenderAllCandles/></Route>
+      {/* <Route path="/candles"><RenderAllCandles/></Route> */}
     </div>
   );
 };
 
-ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
-  document.getElementById('app'),
-);
+// ReactDOM.render(
+//   <Router>
+//     <App />
+//   </Router>,
+//   document.getElementById('root'),
+// );
 export default App;
