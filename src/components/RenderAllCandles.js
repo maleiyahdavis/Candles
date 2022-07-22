@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getAllCandles} from '../../db/models/candles'
+//import {getAllCandles} from '../../db/models/candles'
 
 const RenderAllCandles = () => {
     const [candles, setCandles] = useState([])
