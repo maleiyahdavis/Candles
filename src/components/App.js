@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 // getAPIHealth is defined in our axios-services directory index.js
 // you can think of that directory as a collection of api adapters
@@ -7,10 +6,11 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { getAPIHealth } from '../axios-services';
 import '../style/App.css';
 import RenderAllCandles from './RenderAllCandles'
+import Register from './Register'
 
 const App = () => {
   const [APIHealth, setAPIHealth] = useState('');
-
+  const [allCandles, setAllCandles] = useState([]);
   useEffect(() => {
     // follow this pattern inside your useEffect calls:
     // first, create an async function that will wrap your axios service adapter
@@ -27,17 +27,15 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <h1>Hello, World!</h1>
+      <Route exact path="/" >
+      <h1>Hello!</h1>
       <p>API Status: {APIHealth}</p>
-      {/* <Route path="/candles"><RenderAllCandles/></Route> */}
+      </Route>
+      
+      <Route path="/candles"><RenderAllCandles allCandles={allCandles}/></Route>
+      <Route path="/register"><Register /></Route>
     </div>
   );
 };
 
-// ReactDOM.render(
-//   <Router>
-//     <App />
-//   </Router>,
-//   document.getElementById('root'),
-// );
 export default App;

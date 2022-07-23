@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
-//import {getAllCandles} from '../../db/models/candles'
+import {fetchCandles} from '../api/index'
 
-const RenderAllCandles = () => {
+const RenderAllCandles = ({allCandles}) => {
     const [candles, setCandles] = useState([])
 
     useEffect(() => {
        const fetchAllCandles = async () => {
            try {
-            const response = await getAllCandles()
-            console.log(response);
+            const response = await fetchCandles()
+            //console.log(response);
             setCandles(response)
            } catch (error) {
               console.error("Error fetching all candles") 
@@ -22,7 +22,9 @@ const RenderAllCandles = () => {
            <h1>Candles:</h1> 
            
            <div className="candles_map">
+               
            {
+              
                candles.map((candle, index) => {
                    return (
                       <div key={index}>
