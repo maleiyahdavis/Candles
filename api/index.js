@@ -55,7 +55,7 @@ apiRouter.get('/health', (req, res, next) => {
 });
 
 
-//ROUTER /api/users
+//ROUTER /api/user
 const usersRouter = require('./user');
 apiRouter.use('/user', usersRouter);
 
@@ -70,5 +70,9 @@ apiRouter.use('/candles', candlesRouter);
 //ROUTER /api/reviews
 const reviewsRouter = require('./reviews');
 apiRouter.use('/reviews', reviewsRouter);
+
+//ROUTER /api/orders
+const ordersRouter = require('./orders');
+apiRouter.use('/orders', ordersRouter)
 
 module.exports = apiRouter;

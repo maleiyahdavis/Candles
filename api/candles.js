@@ -13,6 +13,7 @@ candlesRouter.get('/', async (req, res) => {
     }
 })
 
+//GET /api/condles/:candleId
 candlesRouter.get('/:candleId', async (req, res) => {
     const {candleId} = req.params
 

@@ -1,14 +1,36 @@
 const client = require('../client');
 
-// async function createOrder({status, }) {
-//     try{
-//         const {rows:orders} = await client.query(`
-           
-//         `)
-//     } catch(error) {
-//         throw error;
-//     }
-// }
+
+async function createOrder({status, userId}) {
+    try{
+        const {rows:orders} = await client.query(`
+            INSERT INTO orders (status, "userId", date)
+            VALUES (${status}, ${userId}, curdate())
+            RETURNING *;
+        `);
+
+        console.log("Orders created:", orders);
+        return orders
+    } catch(error) {
+        throw error;
+    }
+}
+
+
+async function addProductToOrder({productId, orderId, price, quantity}) {
+    try{
+        const {rows:[orderWithProducts]} = client.query(`
+            INSERT INTO order_products ("productId", "orderId", price, quantity)
+            VALUES (${productId}, ${orderId}, ${price}, ${quantity})
+            RETURNING *;
+        `);
+
+        console.log("order_products created", orderWithProducts);
+        return orderWithProducts
+    } catch(error){
+        throw error
+    }
+}
 
 async function getAllOrders() {
     try{
@@ -96,13 +118,15 @@ async function getOrdersByProduct({id}){
     } catch(error) {
         throw error;
     }
-}
+};
 
 
 module.exports = {
     getAllOrders,
     getOrdersByProduct,
     getOrderById, 
-    getOrdersByUser
+    getOrdersByUser,
+    createOrder, 
+    addProductToOrder
   }
 

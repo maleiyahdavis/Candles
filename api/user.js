@@ -2,7 +2,7 @@ const express = require('express');
 const usersRouter = express.Router();
 const {getAllUsers, getUserByUsername, getUserById, getUser} = require("../db/models/user")
 
-
+//GET api/user/
 usersRouter.get('/', async (req, res) => {
     try{
         const users = await getAllUsers();
@@ -12,6 +12,7 @@ usersRouter.get('/', async (req, res) => {
     }
 })
 
+//POST api/user/login
 usersRouter.post('/login', async (req, res, next) => {
     const { username, password } = req.body;
 
@@ -45,6 +46,7 @@ next(error);
 }
 });
 
+//POST api/user/register
 usersRouter.post('/register', async (req, res, next) => {
     const { username, password} = req.body;
   const SALT_COUNT = 10;
@@ -90,7 +92,32 @@ usersRouter.post('/register', async (req, res, next) => {
   }
 })
 
+//GET api/user/me
+usesrRouter.get('/me', async (req, res) => {
+    
+  const prefix = 'Bearer ';
+  const auth = req.header('Authorization');
 
+  try {
+      if (!auth) {
+          res.status(401).send({
+              message:"You must be logged in to perform this action",
+              name:"error",
+              error:"error"
+          })
+      } else if (auth.startsWith(prefix)) {
+          const token = auth.slice(prefix.length);
+          const { id } = jwt.verify(token, process.env.JWT_SECRET);
+        
+         req.user = await getUserById(id);
+
+         res.send(req.user)
+      } 
+  } catch (error) {
+      console.error(error)
+  }
+
+});
 
 
 module.exports = usersRouter
