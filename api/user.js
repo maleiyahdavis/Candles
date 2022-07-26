@@ -1,6 +1,7 @@
 const express = require('express');
 const usersRouter = express.Router();
-const {getAllUsers, getUserByUsername, getUserById, getUser} = require("../db/models/user")
+const {getAllUsers, getUserByUsername, getUserById, getUser} = require("../db/models/user");
+const {getOrdersByUser} = require("../db/models/orders")
 
 //GET api/user/
 usersRouter.get('/', async (req, res) => {
@@ -93,7 +94,7 @@ usersRouter.post('/register', async (req, res, next) => {
 })
 
 //GET api/user/me
-usesrRouter.get('/me', async (req, res) => {
+usersRouter.get('/me', async (req, res) => {
     
   const prefix = 'Bearer ';
   const auth = req.header('Authorization');
@@ -114,6 +115,18 @@ usesrRouter.get('/me', async (req, res) => {
          res.send(req.user)
       } 
   } catch (error) {
+      console.error(error)
+  }
+
+});
+
+//GET api/user/:userId/orders
+usersRouter.get('/:userId/orders', async (req, res) => {
+  const {userId} = req.params;
+  try{
+      const userOrders = await getOrdersByUser(userId);
+      res.send(userOrders);
+  } catch(error) {
       console.error(error)
   }
 

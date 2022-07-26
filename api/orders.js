@@ -1,6 +1,6 @@
 const express = require('express');
 const ordersRouter = express.Router();
-const {getAllOrders, getOrdersByUser} = require("../db/models/orders")
+const {getAllOrders, getOrdersByUser, createOrder} = require("../db/models/orders")
 
 //GET api/orders
 ordersRouter.get('/', async (req, res) => {
@@ -12,17 +12,21 @@ ordersRouter.get('/', async (req, res) => {
     }
 })
 
-//GET orders/cart
+//POST orders/cart
 
-//POST api/orders
-// ordersRouter.post('/', async (req, res) => {
-//     try{
-        
-//     } catch(error) {
-//         throw error;
-//     }
 
-// })
+
+//POST api/orders  NOT TESTED
+ordersRouter.post('/', async (req, res) => {
+    try {
+        const order = await createOrder(req.body);
+    
+        res.send(order);
+    
+    } catch (error) {
+        next(error)
+    }
+})
 
 //GET api/users/:userId/orders
 ordersRouter.get('/', async (req, res) => {
@@ -34,4 +38,6 @@ ordersRouter.get('/', async (req, res) => {
         console.error(error)
     }
 
-})
+});
+
+module.exports = ordersRouter;
