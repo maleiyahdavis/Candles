@@ -3,12 +3,10 @@ const client = require('../client');
 
 async function createOrder({status, userId}) {
 
-    //const date = now();
-    //console.log(date);
     try{
         const {rows:orders} = await client.query(`
-            INSERT INTO orders (status, "userId")
-            VALUES ($1, ${userId})
+            INSERT INTO orders (status, "userId", "datePlaced")
+            VALUES ($1, ${userId}, CURRENT_DATE)
             RETURNING *;
         `, [status]);
 
@@ -18,6 +16,7 @@ async function createOrder({status, userId}) {
         throw error;
     }
 }
+
 
 
 async function addProductToOrder({productId, orderId, price, quantity}) {
@@ -95,8 +94,7 @@ async function getOrdersByUser(id) {
                 ordersByUser.push(order);
             };
         });
-        //const ordersByUser = allOrders
-        console.log("orderByUserId:", ordersByUser);
+        //console.log("orderByUserId:", ordersByUser);
         return ordersByUser;
 
     } catch(error) {
@@ -132,6 +130,7 @@ module.exports = {
     getOrderById, 
     getOrdersByUser,
     createOrder, 
-    addProductToOrder
+    addProductToOrder,
+   // getCurrentDate
   }
 

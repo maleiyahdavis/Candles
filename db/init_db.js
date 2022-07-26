@@ -79,10 +79,9 @@ async function buildTables() {
       await client.query(`
       CREATE TABLE orders (
         id SERIAL PRIMARY KEY,
-        status TEXT NOT NULL DEFAULT 'created
-        ',
+        status TEXT NOT NULL DEFAULT 'created',
+        "datePlaced" DATE NOT NULL,
         "userId" INTEGER REFERENCES users(id)
-        
       );
       `);
       //PUT THIS BACK "datePlaced" DATE NOT NULL
@@ -266,7 +265,7 @@ async function populateInitialOrderProducts() {
 
     const orderProducts = await Promise.all(orderProductsToCreate.map((addProductToOrder)));
     console.log("OrderProducts created", orderProducts);
-    console.log("Finished creating order_Products...")
+    console.log("Finished creating order_Products...");
 
   } catch(error){
     console.log("Error creating OrderProducts")
