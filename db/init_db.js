@@ -19,7 +19,7 @@ const {
 const {
   createOrder,
   addProductToOrder
-} = require("./models/reviews")
+} = require("./models/orders")
 
 async function buildTables() {
   try {
@@ -61,7 +61,7 @@ async function buildTables() {
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
-        price TEXT NOT NULL,
+        price DECIMAL NOT NULL,
         "imageURL" TEXT NOT NULL,
         "inStock" BOOLEAN NOT NULL DEFAULT FALSE,
         "scent_nameId" INTEGER REFERENCES scent_name(id) NOT NULL
@@ -79,18 +79,20 @@ async function buildTables() {
       await client.query(`
       CREATE TABLE orders (
         id SERIAL PRIMARY KEY,
-        status TEXT NOT NULL DEFAULT 'created',
-        "userId" INTEGER REFERENCES users(id),
-        "datePlaced" DATE NOT NULL
+        status TEXT NOT NULL DEFAULT 'created
+        ',
+        "userId" INTEGER REFERENCES users(id)
+        
       );
       `);
+      //PUT THIS BACK "datePlaced" DATE NOT NULL
 
       await client.query(`
       CREATE TABLE order_products (
         id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES candles(id),
         "orderId" INTEGER REFERENCES orders(id),
-        price TEXT NOT NULL,
+        price DECIMAL NOT NULL,
         quantity INTEGER DEFAULT 1
       );
       `);
@@ -157,37 +159,37 @@ async function populateInitialCandles() {
     console.log("Starting to create candles...");
 
     const candlesToCreate = [
-      {name:"Dark Mode", description:"The perfect late night candle.", price:"16.99",imageURL: "",inStock: true,scent_nameId:5}, //should scentname be a string or integer?
-      {name: "BooleanBerry", description:"A berry blast that fills up a room.", price:"16.99", imageURL: "",inStock: true, scent_nameId:2},
-      {name: "Byte sized Cookies", description:"One light, everybody knows the rules.", price:"16.99", imageURL: "",inStock: true, scent_nameId:2},
-      {name: "Cup of Java", description:"The perfect morning blend.", price:"16.99", imageURL: "", inStock: true,scent_nameId:2},
-      {name: "npm fart", description:"You know the smell.", price:"16.99", imageURL: "",inStock: true, scent_nameId:5},
-      {name: "Debugger Daisies", description:"One of our best selling scents!", price:"16.99", imageURL: "",inStock: true, scent_nameId:1},
-      {name: "Error 404", description:"Will it ever be in stock?", price:"16.99", imageURL: "", inStock: false,scent_nameId: 5},
-      {name:"Roses", description:"Perfect for a date night in.", price:"16.99", imageURL: "",inStock: false, scent_nameId:1},
-      {name:"Costal Breeze", description:"A vacation in a bottle.", price:"16.99", imageURL: "",inStock: true, scent_nameId:4},
-      {name:"Euchalyptus", description:"You'll love it just as much as the koala", price:"16.99", imageURL: "", inStock: true,scent_nameId:4},
-      {name:"Christmas Wreath", description:"Gets you right in the Christmas spirit.", price:"16.99", imageURL: "",inStock: false, scent_nameId:3},
-      {name:"Pine Cones", description:"An autumn or winter scent to bring warmth to a chilly night.", price:"16.99", imageURL: "",inStock: true, scent_nameId:3},
-      {name:"Pumpkin Spice", description:"Bring this iconic spice blend to your home year-round", price:"16.99", imageURL: "", inStock: true,scent_nameId:3},
-      {name:"Apple Crisp", description:"Straight out of the oven!", price:"16.99", imageURL: "", inStock: false,scent_nameId:3},
-      {name:"Sandlewood", description:"A warm and cozy vibe that is perfect for a late evening", price:"16.99", imageURL: "",inStock: true, scent_nameId:5},
-      {name:"Cedar Forest", description:"Like a nice stroll through the forest.", price:"16.99", imageURL: "",inStock: true, scent_nameId:5},
-      {name:"Spring Garden", description:"Fresh scents of all of your favorite flowers", price:"16.99", imageURL: "", inStock: true,scent_nameId:1},
-      {name:"Pineapple Peach Tea", description:"Perfect for a hot summer day.", price:"16.99", imageURL: "",inStock: true, scent_nameId:2},
-      {name:"Citrus Spritz", description:"As refreshing as it sounds.", price:"16.99", imageURL: "", inStock: true,scent_nameId:2},
-      {name:"Gingerbread", description:"A classic on a winter morning.", price:"16.99", imageURL: "",inStock: false, scent_nameId:3},
-      {name:"Birthday Cake", description:"A special sweet treat.", price:"16.99", imageURL: "", inStock: true,scent_nameId:3},
-      {name:"Summer Sunset", description:"The colors speak for itself. Just like our scent.", price:"16.99", imageURL: "", inStock: true,scent_nameId:4},
-      {name:"Firecrackers", description:"A 4th of July best seller.", price:"16.99", imageURL: "", imageURL: true,inStock: "", scent_nameId:3},
-      {name:"Vanilla Bean", description:"Our sweet spin on this sugary scent", price:"16.99", imageURL: "",inStock: true, scent_nameId:2},
-      {name:"Cherry Blossum", description:"Tart cherry with a delicate floral essence", price:"16.99", imageURL: "",inStock: true, scent_nameId:1},
-      {name:"Grapefruit Ginger", description:"Fresh with a spicy ginger kick!", price:"16.99", imageURL: "", inStock: false,scent_nameId:2},
-      {name:"Lemongrass", description:"A fresh clean scent!", price:"16.99", imageURL: "", inStock: true,scent_nameId:4},
-      {name:"Fresh Rainfall", description:"Put it on, curl up in a warm blanket, and read a good book.", price:"16.99", imageURL: "",inStock: true, scent_nameId:5},
-      {name:"Wildflower", description:"Adds a fresh and natural fragrence to any room.", price:"16.99", imageURL: "",inStock: true, scent_nameId:1},
-      {name:"Lilac", description:"Soft and energizing for a spring day.", price:"16.99", imageURL: "",inStock: true, scent_nameId:1},
-      {name:"Mahogany Teakwood", description:"Like grabbing a flannel for a hike in the woods.", price:"16.99", imageURL: "",inStock: false, scent_nameId:5},
+      {name:"Dark Mode", description:"The perfect late night candle.", price:16.99,imageURL: "",inStock: true,scent_nameId:5}, //should scentname be a string or integer?
+      {name: "BooleanBerry", description:"A berry blast that fills up a room.", price:16.99, imageURL: "",inStock: true, scent_nameId:2},
+      {name: "Byte sized Cookies", description:"One light, everybody knows the rules.", price:16.99, imageURL: "",inStock: true, scent_nameId:2},
+      {name: "Cup of Java", description:"The perfect morning blend.", price:16.99, imageURL: "", inStock: true,scent_nameId:2},
+      {name: "npm fart", description:"You know the smell.", price:16.99, imageURL: "",inStock: true, scent_nameId:5},
+      {name: "Debugger Daisies", description:"One of our best selling scents!", price:16.99, imageURL: "",inStock: true, scent_nameId:1},
+      {name: "Error 404", description:"Will it ever be in stock?", price:16.99, imageURL: "", inStock: false,scent_nameId: 5},
+      {name:"Roses", description:"Perfect for a date night in.", price:16.99, imageURL: "",inStock: false, scent_nameId:1},
+      {name:"Costal Breeze", description:"A vacation in a bottle.", price:16.99, imageURL: "",inStock: true, scent_nameId:4},
+      {name:"Euchalyptus", description:"You'll love it just as much as the koala", price:16.99, imageURL: "", inStock: true,scent_nameId:4},
+      {name:"Christmas Wreath", description:"Gets you right in the Christmas spirit.", price:16.99, imageURL: "",inStock: false, scent_nameId:3},
+      {name:"Pine Cones", description:"An autumn or winter scent to bring warmth to a chilly night.", price:16.99, imageURL: "",inStock: true, scent_nameId:3},
+      {name:"Pumpkin Spice", description:"Bring this iconic spice blend to your home year-round", price:16.99, imageURL: "", inStock: true,scent_nameId:3},
+      {name:"Apple Crisp", description:"Straight out of the oven!", price:16.99, imageURL: "", inStock: false,scent_nameId:3},
+      {name:"Sandlewood", description:"A warm and cozy vibe that is perfect for a late evening", price:16.99, imageURL: "",inStock: true, scent_nameId:5},
+      {name:"Cedar Forest", description:"Like a nice stroll through the forest.", price:16.99, imageURL: "",inStock: true, scent_nameId:5},
+      {name:"Spring Garden", description:"Fresh scents of all of your favorite flowers", price:16.99, imageURL: "", inStock: true,scent_nameId:1},
+      {name:"Pineapple Peach Tea", description:"Perfect for a hot summer day.", price:16.99, imageURL: "",inStock: true, scent_nameId:2},
+      {name:"Citrus Spritz", description:"As refreshing as it sounds.", price:16.99, imageURL: "", inStock: true,scent_nameId:2},
+      {name:"Gingerbread", description:"A classic on a winter morning.", price:16.99, imageURL: "",inStock: false, scent_nameId:3},
+      {name:"Birthday Cake", description:"A special sweet treat.", price:16.99, imageURL: "", inStock: true,scent_nameId:3},
+      {name:"Summer Sunset", description:"The colors speak for itself. Just like our scent.", price:16.99, imageURL: "", inStock: true,scent_nameId:4},
+      {name:"Firecrackers", description:"A 4th of July best seller.", price:16.99, imageURL: "", imageURL: "",inStock: true, scent_nameId:3},
+      {name:"Vanilla Bean", description:"Our sweet spin on this sugary scent", price:16.99, imageURL: "",inStock: true, scent_nameId:2},
+      {name:"Cherry Blossum", description:"Tart cherry with a delicate floral essence", price:16.99, imageURL: "",inStock: true, scent_nameId:1},
+      {name:"Grapefruit Ginger", description:"Fresh with a spicy ginger kick!", price:16.99, imageURL: "", inStock: false,scent_nameId:2},
+      {name:"Lemongrass", description:"A fresh clean scent!", price:16.99, imageURL: "", inStock: true,scent_nameId:4},
+      {name:"Fresh Rainfall", description:"Put it on, curl up in a warm blanket, and read a good book.", price:16.99, imageURL: "",inStock: true, scent_nameId:5},
+      {name:"Wildflower", description:"Adds a fresh and natural fragrence to any room.", price:16.99, imageURL: "",inStock: true, scent_nameId:1},
+      {name:"Lilac", description:"Soft and energizing for a spring day.", price:16.99, imageURL: "",inStock: true, scent_nameId:1},
+      {name:"Mahogany Teakwood", description:"Like grabbing a flannel for a hike in the woods.", price:16.99, imageURL: "",inStock: false, scent_nameId:5},
 //flowers, fruity/food, seasonal, fresh, earthy/woody
     ];
 
@@ -228,14 +230,16 @@ async function populateInitialOrders() {
     console.log("starting to create orders...");
 
     const ordersToCreate = [
-      {status:'created', userId: 1},
-      {status:'created', userId: 2},
-      {status:'created', userId: 3},
-      {status:'created', userId: 4},
+      {status: 'completed', userId: 1},
+      {status: 'cancelled', userId: 2},
+      {status: "completed", userId: 3},
+      {status: "created", userId: 4},
     ];
    
 
     const orders = await Promise.all(ordersToCreate.map(createOrder))
+    console.log("Orders Created:", orders);
+    console.log("Finished creating orders!");
       
   } catch(error) {
     console.log("Error creating orders");
@@ -245,22 +249,24 @@ async function populateInitialOrders() {
 
 async function populateInitialOrderProducts() {
   try{
-    console.log("starting to create orderProducts...");
+    console.log("Starting to create orderProducts...");
 
     const orderProductsToCreate =[
-      {productId:1, orderId:1, price:"16.99", qantity:2},
-      {productId:3, orderId:1, price:"16.99", qantity:1},
-      {productId:22, orderId:1, price:"16.99", qantity:3},
-      {productId:8, orderId:2, price:"16.99", qantity:1},
-      {productId:30, orderId:2, price:"16.99", qantity:2},
-      {productId:28, orderId:3, price:"16.99", qantity:3},
-      {productId:18, orderId:3, price:"16.99", qantity:2},
-      {productId:10, orderId:4, price:"16.99", qantity:2},
-      {productId: 13, orderId:4, price:"16.99", qantity:1},
-      {productId:25, orderId:4, price:"16.99", qantity:3}
+      {productId:1, orderId:1, price:16.99, quantity:2},
+      {productId:3, orderId:1, price:16.99, quantity:1},
+      {productId:22, orderId:1, price:16.99, quantity:3},
+      {productId:8, orderId:2, price:16.99, quantity:1},
+      {productId:30, orderId:2, price:16.99, quantity:2},
+      {productId:28, orderId:3, price:16.99, quantity:3},
+      {productId:18, orderId:3, price:16.99, quantity:2},
+      {productId:10, orderId:4, price:16.99, quantity:2},
+      {productId: 13, orderId:4, price:16.99, quantity:1},
+      {productId:25, orderId:4, price:16.99, quantity:3}
     ];
 
-    const orderProducts = await Promise.all(orderProductsToCreate.map(addProductToOrder))
+    const orderProducts = await Promise.all(orderProductsToCreate.map((addProductToOrder)));
+    console.log("OrderProducts created", orderProducts);
+    console.log("Finished creating order_Products...")
 
   } catch(error){
     console.log("Error creating OrderProducts")

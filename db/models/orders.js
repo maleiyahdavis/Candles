@@ -2,14 +2,17 @@ const client = require('../client');
 
 
 async function createOrder({status, userId}) {
+
+    //const date = now();
+    //console.log(date);
     try{
         const {rows:orders} = await client.query(`
-            INSERT INTO orders (status, "userId", date)
-            VALUES (${status}, ${userId}, curdate())
+            INSERT INTO orders (status, "userId")
+            VALUES ($1, ${userId})
             RETURNING *;
-        `);
+        `, [status]);
 
-        console.log("Orders created:", orders);
+        //console.log("Orders :", orders);
         return orders
     } catch(error) {
         throw error;
@@ -18,14 +21,15 @@ async function createOrder({status, userId}) {
 
 
 async function addProductToOrder({productId, orderId, price, quantity}) {
+    //console.log(productId, orderId, price, quantity)
     try{
-        const {rows:[orderWithProducts]} = client.query(`
+        const {rows:[orderWithProducts]} = await client.query(`
             INSERT INTO order_products ("productId", "orderId", price, quantity)
-            VALUES (${productId}, ${orderId}, ${price}, ${quantity})
+            VALUES ($1, $2, $3, $4)
             RETURNING *;
-        `);
+        `, [productId, orderId, price, quantity]);
 
-        console.log("order_products created", orderWithProducts);
+       // console.log("order_products", orderWithProducts);
         return orderWithProducts
     } catch(error){
         throw error
@@ -38,8 +42,7 @@ async function getAllOrders() {
             SELECT * 
             FROM orders;
         `);
-        console.log("orders?", orders)
-
+       
         orders.map((order)=>{
             order.products = [];
         })
@@ -48,17 +51,16 @@ async function getAllOrders() {
             SELECT * 
             FROM order_products;
         `);
-        console.log("products?",products)
-
-       const ordersWithProducts = orders.map((order)=> {
-                                        products.map((product)=>{
-                                            if(order.id === product.orderId) {
-                                                order.products.push(product);
-                                            };
-                                        });
-                                    });
-        console.log("orders with products?", ordersWithProducts)
-        return ordersWithProducts;
+       
+        orders.map((order)=> {
+            products.map((product)=>{
+                 if(order.id === product.orderId) {
+                     order.products.push(product);
+                 };
+            });
+         });
+        //console.log("orders with products", orders)
+        return orders;
     } catch(error) {
         throw error;
     }
@@ -82,17 +84,20 @@ async function getOrderById(id) {
     }
 }
 
-async function getOrdersByUser({id}) {
-    console.log('getOrdersByUser id passed in:', id)
+async function getOrdersByUser(id) {
+    //console.log('getOrdersByUser id passed in:', id)
     try{
         const allOrders = await getAllOrders();
-        const orderByUserId = allOrders.filter((order)=>{
-            if (order.userId === id) {
-                return true;
+        const ordersByUser = [];
+        
+       allOrders.map((order)=>{
+            if (order.userId == id) {
+                ordersByUser.push(order);
             };
         });
-        console.log("orderByUserId?", orderByUserId);
-        return orderByUserId;
+        //const ordersByUser = allOrders
+        console.log("orderByUserId:", ordersByUser);
+        return ordersByUser;
 
     } catch(error) {
         throw error;
