@@ -49,12 +49,14 @@ next(error);
 
 //POST api/user/register
 usersRouter.post('/register', async (req, res, next) => {
-    const { username, password} = req.body;
+  
+  const { firstName, lastName, username, password, email} = req.body.user;
+  
   const SALT_COUNT = 10;
 
   try {
     const _user = await getUserByUsername(username);
-
+    //console.log("user:",_user); 
     if (_user) {
       next({
         name: 'UserExistsError',
@@ -72,9 +74,12 @@ usersRouter.post('/register', async (req, res, next) => {
     bcrypt.hash(password, SALT_COUNT, async function (err, hashedPassword) {
       const user = await createUser({
         username,
-        password: hashedPassword
+        password: hashedPassword,
+        lastName,
+        firstName,
+        email
       });
-
+      console.log("user", user);
       const token = jwt.sign({
         id: user.id,
         username

@@ -18,9 +18,10 @@ export const fetchCandles = async () => {
  }
  }
 
- export const registerUser = async (username, pwd) => {
+ export const registerUser = async (firstName, lastName, username, pwd, email) => {
+    console.log("input", firstName, lastName, username, pwd, email)
     try{
-        const response = await fetch(`http://localhost:4000/api/users/register`, {
+        const response = await fetch(`http://localhost:4000/api/register`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -28,12 +29,17 @@ export const fetchCandles = async () => {
             body: JSON.stringify({
                 user: {
                     username: username,
-                    password: pwd
+                    password: pwd,
+                    firstName: firstName, 
+                    lastName: lastName, 
+                    email: email
                 }
             })
         })
         const result = await response.json()
+        console.log("am I getting here?")
         console.log('result: ', result)
+
         if(result.success) {
             localStorage.setItem('token', result.data.token)
             return result
