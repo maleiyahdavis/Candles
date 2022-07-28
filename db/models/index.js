@@ -10,7 +10,8 @@ module.exports = {
   ...require('./scent_names'), 
   ...require('./candles'), 
   ...require('./reviews'),
-  ...require('./orders')
+  ...require('./orders'),
+  ...require('./order_products')
 };
 
 // then, in your API, you'll require the appropriate model

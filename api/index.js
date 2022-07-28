@@ -73,6 +73,10 @@ apiRouter.use('/reviews', reviewsRouter);
 
 //ROUTER /api/orders
 const ordersRouter = require('./orders');
-apiRouter.use('/orders', ordersRouter)
+apiRouter.use('/orders', ordersRouter);
+
+//ROUTER /api/order_products
+const order_productsRouter = require('./order_products');
+apiRouter.use('/order_products', order_productsRouter);
 
 module.exports = apiRouter;

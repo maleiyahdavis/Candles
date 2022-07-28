@@ -17,24 +17,6 @@ async function createOrder({status, userId}) {
     }
 }
 
-
-
-async function addProductToOrder({productId, orderId, price, quantity}) {
-    //console.log(productId, orderId, price, quantity)
-    try{
-        const {rows:[orderWithProducts]} = await client.query(`
-            INSERT INTO order_products ("productId", "orderId", price, quantity)
-            VALUES ($1, $2, $3, $4)
-            RETURNING *;
-        `, [productId, orderId, price, quantity]);
-
-       // console.log("order_products", orderWithProducts);
-        return orderWithProducts
-    } catch(error){
-        throw error
-    }
-}
-
 async function getAllOrders() {
     try{
         const {rows:orders} = await client.query(`
@@ -123,6 +105,66 @@ async function getOrdersByProduct({id}){
     }
 };
 
+async function getCartByUser({id}) {
+    try{
+        const userOrder = await getOrdersByUser(id);
+
+        if (userOrder.status === 'created') {
+            return userOrder;
+        }
+    } catch(error) {
+        console.error(error)
+    }
+
+};
+
+async function updatedOrder({id, status, userId}) {
+    try{
+        const {rows:[updatedOrder]} = await client.query(`
+            UPDATE orders
+            SET status=${status}, "userId"=${userId}
+            WHERE id=${id}
+            RETURNING *;
+        `);
+
+        return updatedOrder
+    } catch(error) {
+        console.error(error);
+    }
+};
+
+async function completeOrder({id}) {
+    try{
+        const {rows:[completedOrder]} = await client.query(`
+            UPDATE orders
+            SET status='completed'
+            WHERE id=${id}
+            RETURNING *;
+        `)
+
+        return completedOrder;
+
+    } catch(error) {
+        console.error(error)
+    }
+}
+
+async function cancelOrder(id) {
+    try{
+        const {rows:[cancelledOrder]} = await client.query(`
+            UPDATE orders
+            SET status='cancelled'
+            WHERE id=${id}
+            RETURNING *;
+        `)
+
+        return cancelledOrder;
+
+    } catch(error) {
+        console.error(error)
+    }
+}
+
 
 module.exports = {
     getAllOrders,
@@ -130,7 +172,9 @@ module.exports = {
     getOrderById, 
     getOrdersByUser,
     createOrder, 
-    addProductToOrder,
-   // getCurrentDate
+    getCartByUser,
+    completeOrder,
+    cancelOrder,
+    updatedOrder
   }
 
