@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "16.14.2"
+  },
   "scripts": {
     "postinstall": "npm run client:build",
     "client:dev": "react-scripts start",
