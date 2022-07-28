@@ -1,6 +1,6 @@
 const express = require('express');
 const ordersRouter = express.Router();
-const {getAllOrders, getOrdersByUser, createOrder} = require("../db/models/orders")
+const {getAllOrders, createOrder, getCartByUser,updatedOrder, cancelOrder} = require("../db/models/orders")
 
 //GET api/orders
 ordersRouter.get('/', async (req, res) => {
@@ -12,8 +12,19 @@ ordersRouter.get('/', async (req, res) => {
     }
 })
 
-//POST orders/cart
+//POST orders/cart //NOT TESTED
+ordersRouter.post('/cart', async(req,res) => {
+    //WHERE DO WE GET ID
+    //req.body.user.id? something along these lines
+    try{
+        const userCart = await getCartByUser(id)
 
+        res.send(userCart);
+
+    } catch(error) {
+       console.error(error);
+    }
+})
 
 
 //POST api/orders  NOT TESTED
@@ -24,20 +35,50 @@ ordersRouter.post('/', async (req, res) => {
         res.send(order);
     
     } catch (error) {
-        next(error)
+        console.error(error);
     }
-})
+});
 
-//GET api/users/:userId/orders
-ordersRouter.get('/', async (req, res) => {
-    const {userId} = req.params;
+//POST api/orders/:orderId/products 
+ordersRouter.post('/:orderId/products', async (req,res) => {
+    const {orderId} = req.params
     try{
-        const userOrders = await getOrdersByUser(userId);
-        res.send(userOrders);
+        //add single product to order (using order_products)
+        //prevent duplication on orderId or productID pair
+        //if product already exists on order, increment quantity and update price
+
     } catch(error) {
-        console.error(error)
+        console.error(error);
     }
 
+});
+
+//PATCH /api/orders/:orderId      NOT TESTED
+ordersRouter.patch('/:orderId', async (req, res) => {
+    const {orderId} = req.params;
+    //HOW DO WE GET STATUS AND USER ID
+    try {
+        const updatedOrder = await updatedOrder({orderId}) 
+    
+        res.send(updatedOrder);
+    
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+//DELETE /api/orders/:orderId       NOT TESTED
+ordersRouter.delete('/:orderId', async (req, res) => {
+    const {orderId} = req.params;
+ 
+    try {
+        const deletedOrder = await cancelOrder(orderId)
+    
+        res.send(deletedOrder);
+    
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 module.exports = ordersRouter;

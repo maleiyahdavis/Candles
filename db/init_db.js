@@ -19,7 +19,7 @@ const {
 const {
   createOrder,
   addProductToOrder
-} = require("./models/orders")
+} = require("./models/order_products")
 
 async function buildTables() {
   try {
@@ -229,9 +229,9 @@ async function populateInitialOrders() {
     console.log("starting to create orders...");
 
     const ordersToCreate = [
-      {status: 'completed', userId: 1},
-      {status: 'cancelled', userId: 2},
-      {status: "completed", userId: 3},
+      {status: 'created', userId: 1},
+      {status: 'created', userId: 2},
+      {status: "created", userId: 3},
       {status: "created", userId: 4},
     ];
    
