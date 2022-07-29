@@ -15,7 +15,7 @@ const RenderAllCandles = ({allCandles}) => {
            }
        }
        fetchAllCandles()
-    })
+    }, [])
 
     return (
         <div>

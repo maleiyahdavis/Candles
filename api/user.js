@@ -2,6 +2,10 @@ const express = require('express');
 const usersRouter = express.Router();
 const {getAllUsers, getUserByUsername, getUserById, getUser} = require("../db/models/user");
 const {getOrdersByUser} = require("../db/models/orders")
+const bcrypt = require('../node_modules/bcrypt');
+const jwt = require('jsonwebtoken'); 
+const {JWT_SECRET = 'secret'} = process.env;
+
 
 //GET api/user/
 usersRouter.get('/', async (req, res) => {
@@ -15,7 +19,10 @@ usersRouter.get('/', async (req, res) => {
 
 //POST api/user/login
 usersRouter.post('/login', async (req, res, next) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body.user;
+    console.log(req.body)
+    console.log("username", username, "password", password)
+
 
   if (!username || !password) {
     next({
@@ -26,6 +33,7 @@ usersRouter.post('/login', async (req, res, next) => {
 
   try {
     const user = await getUserByUsername(username);
+    console.log("user:", user)
     const hashedPassword = user.password;
 
     console.log(hashedPassword)
@@ -34,7 +42,7 @@ usersRouter.post('/login', async (req, res, next) => {
 
     bcrypt.compare(password, hashedPassword, function (err, passwordsMatch) {
       if (passwordsMatch) {
-        const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET)
+        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET)
         res.send({ message: "you're logged in!", token: `${token}` });
         
         return token;

@@ -1,4 +1,9 @@
-const BASE_URL = process.env.DATABASE_URL || 'postgres://localhost:5432/candles-dev'
+const BASE_URL = 'https://lit-coast-12281.herokuapp.com' || 'postgres://localhost:5432/candles-dev';
+//process.env.DATABASE_URL 
+//|| 'postgres://localhost:5432/candles-dev';
+
+//process.env.DATABASE_URL || 'postgres://localhost:5432/candles-dev'
+
 
 export const fetchCandles = async () => {
    try {
@@ -18,10 +23,10 @@ export const fetchCandles = async () => {
  }
  }
 
- export const registerUser = async (firstName, lastName, username, pwd, email) => {
+const registerUser = async (firstName, lastName, username, pwd, email) => {
     console.log("input", firstName, lastName, username, pwd, email)
     //try{
-        const response = await fetch(`http://localhost:4000/api/user/register`, {
+        const response = await fetch(`${BASE_URL}/api/user/register`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -38,6 +43,7 @@ export const fetchCandles = async () => {
         }).then(response => {console.log(response); response.json()})
         .then(result => {
             console.log("RESULT", result)
+
         }).catch(console.error);
         // const result = await response.json()
         // console.log("am I getting here?")
@@ -51,3 +57,27 @@ export const fetchCandles = async () => {
     // catch(err) {console.log(err)}
  
 }
+
+
+const CheckForToken = async (username, password) => {
+
+   await fetch(`http://localhost:4000/api/user/login`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user: {
+            username: username,
+            password: password
+            }
+        })
+        }).then(response => response.json())
+        .then(result => {
+            console.log("result", result)
+            return result;
+        })
+        .catch(console.error);
+}
+
+export {registerUser, CheckForToken};

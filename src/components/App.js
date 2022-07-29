@@ -6,7 +6,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { getAPIHealth } from '../axios-services';
 import '../style/App.css';
 import RenderAllCandles from './RenderAllCandles'
-import Register from './Register'
+import Register from './Register';
+import Login from './Login';
 
 const App = () => {
   const [APIHealth, setAPIHealth] = useState('');
@@ -25,6 +26,9 @@ const App = () => {
     getAPIStatus();
   }, []);
 
+  const [userData, setUserData] = useState("");
+  const [token, setToken] = useState("");
+
   return (
     <div className="app-container">
       <Route exact path="/" >
@@ -34,6 +38,7 @@ const App = () => {
       
       <Route path="/candles"><RenderAllCandles allCandles={allCandles}/></Route>
       <Route path="/register"><Register /></Route>
+      <Route path="/login"><Login setToken={setToken} setUserData={setUserData} /></Route>
     </div>
   );
 };
