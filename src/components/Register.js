@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {BrowserRouter as Router, Routes, useHistory, Route, Link } from "react-router-dom"
+import {useHistory} from "react-router-dom"
 import {registerUser} from '../api/index'
 import {storeToken, storeUser} from '../auth/index'
 
@@ -28,13 +28,21 @@ const Register = ({ action, setToken, setUserData, setIsLoggedIn }) => {
             onSubmit={async (event)=>{
               event.preventDefault();
               try {
-                const {data}  = await registerUser(username, password, lastName, firstName, email)
-                console.log("data", data);
-                storeToken(data.token)
-                storeUser(username);
-                setIsLoggedIn(true);
-                setUsername("");
-                setPassword("");
+                const response  = await registerUser(firstName, lastName, username, password, email)
+                console.log("response", response);
+                if(response.user){
+                  console.log("user exists")
+                  storeToken(response.token)
+                  storeUser(username);
+                  setIsLoggedIn(true);
+                  setUsername("");
+                  setPassword("");
+                  history.push('/')
+                }
+                else{
+                  console.log("user...")
+                }
+                
               } catch (error) {
                 console.log(error);
               }
@@ -75,7 +83,7 @@ const Register = ({ action, setToken, setUserData, setIsLoggedIn }) => {
                   setEmail(event.target.value);
               }}></input>
             </fieldset>
-            <button>Register</button>
+            <button type="submit">Register</button>
           </form>
         </div>
       )

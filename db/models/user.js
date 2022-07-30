@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const SALT = 10; 
 
 async function createUser({firstName, lastName, email, username, password}) {
+  console.log('creating user:', firstName, lastName, email, username)
   try{
     const hashedPassword = await bcrypt.hash(password, SALT);
     const {rows:[user]} = await client.query(`
@@ -12,17 +13,17 @@ async function createUser({firstName, lastName, email, username, password}) {
         ON CONFLICT (username) DO NOTHING
         RETURNING *;`,
         [firstName, lastName, email, username, hashedPassword]);
-        
+       
         return user;
   } catch(error){
     console.error("Error creating user");
     throw error
   }
 }
-async function getUser({ username, password }) {
+async function getUser( username, password ) {
   try {
     const user = await getUserByUsername(username);
-    //console.log("LOOOOK", user)
+    console.log("LOOOOK", user)
     if (!user) {
       return;
     }
@@ -77,7 +78,7 @@ async function getUserByUsername(username) {
       WHERE username=$1;
     `,[username])
 
-    //console.log("getUserByUsername?", "username", username, user)
+    console.log("getUserByUsername?", "username", username, user)
     return user;
   } catch(error){
     throw error

@@ -8,10 +8,13 @@ import '../style/App.css';
 import RenderAllCandles from './RenderAllCandles'
 import Register from './Register';
 import Login from './Login';
+import Header from './Header';
+import Logout from './Logout'
+import RenderSingleCandle from './RenderSingleCandle'
 
 const App = () => {
   const [APIHealth, setAPIHealth] = useState('');
-  const [allCandles, setAllCandles] = useState([]);
+  const [singleCandle, setSingleCandle] = useState("");
   useEffect(() => {
     // follow this pattern inside your useEffect calls:
     // first, create an async function that will wrap your axios service adapter
@@ -28,17 +31,22 @@ const App = () => {
 
   const [userData, setUserData] = useState("");
   const [token, setToken] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   return (
     <div className="app-container">
+      <Header isLoggedIn={isLoggedIn}/>
       <Route exact path="/" >
-      <h1>Hello!</h1>
+      <h2>Hello!</h2>
       <p>API Status: {APIHealth}</p>
       </Route>
       
-      <Route path="/candles"><RenderAllCandles allCandles={allCandles}/></Route>
-      <Route path="/register"><Register /></Route>
+      <Route path="/candles"><RenderAllCandles setSingleCandle={setSingleCandle}/></Route>
+      {/* <RenderSingleCandle/> */}
+      <Route path="/register"><Register setIsLoggedIn={setIsLoggedIn}/></Route>
       <Route path="/login"><Login setToken={setToken} setUserData={setUserData} /></Route>
+      <Route path="/logout"><Logout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/></Route>
+      
     </div>
   );
 };

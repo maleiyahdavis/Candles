@@ -5,9 +5,11 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .app-container h1 {
-  color: var(--green);
+  /* color: green; */
   padding: 1rem;
+  font-family: 'BhuTuka Expanded One', cursive;
 }
