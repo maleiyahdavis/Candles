@@ -23,6 +23,7 @@ apiRouter.use(async (req, res, next) => {
           
           if(id){
               req.user = await getUserById(id)
+              //console.log("user from index: " + req.user)
               next();
           }else {
               next({

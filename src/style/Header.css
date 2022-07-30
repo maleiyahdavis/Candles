@@ -1,0 +1,40 @@
+
+.header {
+    align-items: center;
+    z-index: 100;
+    width: 100%;
+}
+
+h1 {
+    padding: 2px;
+    margin: 2px;
+    color:  rgb(87, 132, 160);
+    text-align: center;
+    border-bottom: 1px solid  rgb(175, 184, 189);
+}
+
+.header__nav {
+    display: flex;
+    background-color: rgb(87, 132, 160);
+    justify-content:end;
+    align-items: center;
+    padding-right: 10px;
+    text-decoration: none;
+    
+}
+
+
+.nav_link{
+    text-decoration: none !important;
+    color: white;
+    padding: 10px;
+    margin: 3px;
+    
+}
+
+.nav_link:hover{
+    
+    color: white !important;
+    
+    
+}

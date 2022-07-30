@@ -1,6 +1,6 @@
 const express = require('express');
 const usersRouter = express.Router();
-const {getAllUsers, getUserByUsername, getUserById, getUser} = require("../db/models/user");
+const {getAllUsers, getUserByUsername, getUserById, createUser, getUser} = require("../db/models/user");
 const {getOrdersByUser} = require("../db/models/orders")
 const bcrypt = require('../node_modules/bcrypt');
 const jwt = require('jsonwebtoken'); 
@@ -20,40 +20,51 @@ usersRouter.get('/', async (req, res) => {
 //POST api/user/login
 usersRouter.post('/login', async (req, res, next) => {
     const { username, password } = req.body.user;
+    //console.log(req)
     console.log(req.body)
     console.log("username", username, "password", password)
 
 
   if (!username || !password) {
-    next({
+    res.send({
       name: "MissingCredentialsError",
       message: "Please supply both a username and password"
     });
   };
 
   try {
-    const user = await getUserByUsername(username);
+    const user = await getUser(username, password);
     console.log("user:", user)
     const hashedPassword = user.password;
 
-    console.log(hashedPassword)
-    console.log(password)
+    //console.log(hashedPassword)
+    //console.log(password)
 
-
-    bcrypt.compare(password, hashedPassword, function (err, passwordsMatch) {
-      if (passwordsMatch) {
-        const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET)
-        res.send({ message: "you're logged in!", token: `${token}` });
+    const passwordsMatch =  await bcrypt.compare(password,hashedPassword)
+    if(user && passwordsMatch) {
+            
+      const token = jwt.sign({id: user.id, username: user.username}, JWT_SECRET,  {expiresIn: '1w'})
+      
+      res.send({ 
+          user: {
+              id: user.id,
+              username: user.username
+          },
+          message: "you're logged in!",
+          token
+      });
+    }else {
         
-        return token;
-      } else throw new Error({name: 'IncorrectCredentialsError',
-            message: 'Username or password is incorrect'});
-});
-} catch (error) {
-console.log(error);
-next(error);
-}
-});
+        next({
+            name: "IncorrectCredentialsError",
+            message: "Username or password is incorrect",
+        });
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+  });
 
 //POST api/user/register
 usersRouter.post('/register', async (req, res, next) => {
@@ -66,7 +77,7 @@ usersRouter.post('/register', async (req, res, next) => {
     const _user = await getUserByUsername(username);
     //console.log("user:",_user); 
     if (_user) {
-      next({
+      res.send({
         name: 'UserExistsError',
         message: 'A user by that username already exists'
       });
@@ -79,28 +90,29 @@ usersRouter.post('/register', async (req, res, next) => {
       })
     };
 
-    bcrypt.hash(password, SALT_COUNT, async function (err, hashedPassword) {
+    //bcrypt.hash(password, SALT_COUNT, async function (err, hashedPassword) {
       const user = await createUser({
         username,
-        password: hashedPassword,
+        password,
         lastName,
         firstName,
         email
       });
-      console.log("user", user);
+      //console.log("user", user);
       const token = jwt.sign({
         id: user.id,
         username
-      }, process.env.JWT_SECRET, {
+      }, JWT_SECRET, {
         expiresIn: '1w'
       });
-
-      res.send({
-        user,
-        message: "thank you for signing up",
-        token
-      });
-    });
+     // console.log("token", token);
+      
+     res.send({
+      message: 'thank you for sigining up',
+      token,
+      user
+    })
+    
   } catch ({ name, message }) {
     next({ name, message })
   }

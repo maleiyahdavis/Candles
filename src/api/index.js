@@ -1,5 +1,6 @@
-const BASE_URL = 'https://lit-coast-12281.herokuapp.com' || 'postgres://localhost:5432/candles-dev';
-//process.env.DATABASE_URL 
+const BASE_URL = process.env.DATABASE_URL  || 'http://localhost:4000';
+//'https://lit-coast-12281.herokuapp.com'
+//
 //|| 'postgres://localhost:5432/candles-dev';
 
 //process.env.DATABASE_URL || 'postgres://localhost:5432/candles-dev'
@@ -7,7 +8,7 @@ const BASE_URL = 'https://lit-coast-12281.herokuapp.com' || 'postgres://localhos
 
 export const fetchCandles = async () => {
    try {
-     const response = await fetch(`http://localhost:4000/api/candles`,{
+     const response = await fetch(`${BASE_URL}/api/candles`,{
        headers: {
            'Content-Type': 'application/json'
        }
@@ -23,9 +24,27 @@ export const fetchCandles = async () => {
  }
  }
 
-const registerUser = async (firstName, lastName, username, pwd, email) => {
-    console.log("input", firstName, lastName, username, pwd, email)
-    //try{
+ export const fetchSingleCandle = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}/api/candles/${id}`,{
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        })
+      const result = await response.json()
+      
+      //console.log("result:", result);
+      return result
+     
+      
+  } catch (error) {
+      console.log(error)
+  }
+  }
+
+const registerUser = async (firstName, lastName, username, password, email) => {
+    console.log("input", firstName, lastName, username, password, email)
+    try{
         const response = await fetch(`${BASE_URL}/api/user/register`, {
             method: "POST",
             headers: {
@@ -34,50 +53,41 @@ const registerUser = async (firstName, lastName, username, pwd, email) => {
             body: JSON.stringify({
                 user: {
                     username: username,
-                    password: pwd,
+                    password: password,
                     firstName: firstName, 
                     lastName: lastName, 
                     email: email
                 }
             })
-        }).then(response => {console.log(response); response.json()})
-        .then(result => {
-            console.log("RESULT", result)
-
-        }).catch(console.error);
-        // const result = await response.json()
-        // console.log("am I getting here?")
-        // console.log('result: ', result)
-
-    //     if(result.success) {
-    //         localStorage.setItem('token', result.data.token)
-    //         return result
-    //     }
-    // }
-    // catch(err) {console.log(err)}
+        })
+        const result = await response.json()
+        console.log("result", result.name)
+        console.log("am I getting here?")
+        return result
+        
+    }
+    catch(err) {console.log(err)}
  
 }
 
 
 const CheckForToken = async (username, password) => {
-
-   await fetch(`http://localhost:4000/api/user/login`, {
+    console.log("checking in here...", username)
+   const response = await fetch(`${BASE_URL}/api/user/login`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             user: {
-            username: username,
-            password: password
+            password,
+            username,
             }
         })
-        }).then(response => response.json())
-        .then(result => {
-            console.log("result", result)
-            return result;
         })
-        .catch(console.error);
+        const result = await response.json();
+        console.log(result)
+        return result
 }
 
 export {registerUser, CheckForToken};
