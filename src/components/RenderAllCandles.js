@@ -4,9 +4,9 @@ import {useHistory, Route, Switch, Link} from "react-router-dom"
 import RenderSingleCandle from './RenderSingleCandle'
 import '../style/RenderAllCandles.css'
 
-const RenderAllCandles = () => {
+const RenderAllCandles = ({setSingleCandle}) => {
     const [candles, setCandles] = useState([])
-    const [singleCandle, setSingleCandle] = useState({})
+    
     const history = useHistory();
 
     const getSelectedCandle = async(can) => {
@@ -14,7 +14,8 @@ const RenderAllCandles = () => {
             const candle = await fetchSingleCandle(can.id)
             console.log(candle)
             setSingleCandle(candle)
-            history.push(`/candle/${candle.id}`)
+            history.push(`/candles/:${candle.id}`)
+            
             
         } catch (error) {
             console.log(error)
@@ -45,12 +46,13 @@ const RenderAllCandles = () => {
                candles.map((candle, index) => {
                    return (
                       <div key={index}>
-                       <h3><Link to={`/candles/${index+1}`}> {candle.name}</Link></h3>
+                       <h3>{candle.name}</h3>
                         <p>Description: {candle.description}</p>
                         <p>Price: {candle.price}</p>
                         
                         <button onClick={()=>{getSelectedCandle(candle)}}>View</button>
-                      </div> 
+
+                      </div>
                    )
                })
            }

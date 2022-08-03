@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 // getAPIHealth is defined in our axios-services directory index.js
 // you can think of that directory as a collection of api adapters
 // where each adapter fetches specific info from our express server's /api route
@@ -14,7 +14,7 @@ import RenderSingleCandle from './RenderSingleCandle'
 
 const App = () => {
   const [APIHealth, setAPIHealth] = useState('');
-  const [singleCandle, setSingleCandle] = useState("");
+  
   useEffect(() => {
     // follow this pattern inside your useEffect calls:
     // first, create an async function that will wrap your axios service adapter
@@ -32,7 +32,8 @@ const App = () => {
   const [userData, setUserData] = useState("");
   const [token, setToken] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-
+  const [singleCandle, setSingleCandle] = useState({})
+  
   return (
     <div className="app-container">
       <Header isLoggedIn={isLoggedIn}/>
@@ -41,8 +42,17 @@ const App = () => {
       <p>API Status: {APIHealth}</p>
       </Route>
       
-      <Route path="/candles"><RenderAllCandles setSingleCandle={setSingleCandle}/></Route>
-      {/* <RenderSingleCandle/> */}
+      
+       <Route exact path="/candles"> 
+        <RenderAllCandles setSingleCandle={setSingleCandle}/></Route>
+       
+       <Route path={`/candles/:${singleCandle.id}`}>
+       <RenderSingleCandle singleCandle={singleCandle} setSingleCandle={setSingleCandle}/></Route>
+
+       
+
+      
+     
       <Route path="/register"><Register setIsLoggedIn={setIsLoggedIn}/></Route>
       <Route path="/login"><Login setToken={setToken} setUserData={setUserData} /></Route>
       <Route path="/logout"><Logout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/></Route>
