@@ -71,23 +71,23 @@ const registerUser = async (firstName, lastName, username, password, email) => {
 }
 
 
-const CheckForToken = async (username, password) => {
-    console.log("checking in here...", username)
-   const response = await fetch(`${BASE_URL}/api/user/login`, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            user: {
-            password,
-            username,
-            }
-        })
-        })
-        const result = await response.json();
-        console.log(result)
-        return result
-}
+// const CheckForToken = async (username, password) => {
+//     console.log("checking in here...", username)
+//    const response = await fetch(`${BASE_URL}/api/user/login`, {
+//         method: "POST",
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             user: {
+//             password,
+//             username,
+//             }
+//         })
+//         })
+//         const result = await response.json();
+//         console.log(result)
+//         return result
+// }
 
-export {registerUser, CheckForToken};
+export {registerUser};

@@ -11,6 +11,7 @@ import Login from './Login';
 import Header from './Header';
 import Logout from './Logout'
 import RenderSingleCandle from './RenderSingleCandle'
+import Cart from './Cart';
 
 const App = () => {
   const [APIHealth, setAPIHealth] = useState('');
@@ -54,9 +55,9 @@ const App = () => {
       
      
       <Route path="/register"><Register setIsLoggedIn={setIsLoggedIn}/></Route>
-      <Route path="/login"><Login setToken={setToken} setUserData={setUserData} /></Route>
+      <Route path="/login"><Login setToken={setToken} setUserData={setUserData} setIsLoggedIn={setIsLoggedIn} /></Route>
       <Route path="/logout"><Logout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/></Route>
-      
+      <Route path="/cart"><Cart/></Route>
     </div>
   );
 };

@@ -37,8 +37,8 @@ usersRouter.post('/login', async (req, res, next) => {
     console.log("user:", user)
     const hashedPassword = user.password;
 
-    //console.log(hashedPassword)
-    //console.log(password)
+    // console.log(hashedPassword)
+    // console.log(password)
 
     const passwordsMatch =  await bcrypt.compare(password,hashedPassword)
     if(user && passwordsMatch) {

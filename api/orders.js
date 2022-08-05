@@ -14,10 +14,11 @@ ordersRouter.get('/', async (req, res) => {
 
 //POST orders/cart //NOT TESTED
 ordersRouter.post('/cart', async(req,res) => {
+    console.log("test",req.user)
     //WHERE DO WE GET ID
     //req.body.user.id? something along these lines
     try{
-        const userCart = await getCartByUser(id)
+        const userCart = await getCartByUser(1)
 
         res.send(userCart);
 
