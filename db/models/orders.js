@@ -1,17 +1,23 @@
 const client = require('../client');
+const {addProductToOrder} = require("./order_products")
 
 
-async function createOrder({status, userId}) {
-
+async function createOrder({status, userId, productId, price, quantity}) {
+    //console.log(status,userId);
     try{
-        const {rows:orders} = await client.query(`
+        const {rows:[order]} = await client.query(`
             INSERT INTO orders (status, "userId", "datePlaced")
             VALUES ($1, ${userId}, CURRENT_DATE)
             RETURNING *;
         `, [status]);
 
-        //console.log("Orders :", orders);
-        return orders
+        console.log("Orders :", order);
+        const orderId=order.id
+        console.log("ORDER ID THAT SHOULD BE PASSED IN", orderId)
+
+        const updatedOrder = await addProductToOrder({productId, orderId, price, quantity})
+        console.log("CREATE ORDER WORKING:", order, updatedOrder)
+        return order, updatedOrder
     } catch(error) {
         throw error;
     }
@@ -105,7 +111,7 @@ async function getOrdersByProduct({id}){
     }
 };
 
-async function getCartByUser({id}) {
+async function getCartByUser(id) {
     try{
         const userOrder = await getOrdersByUser(id);
 

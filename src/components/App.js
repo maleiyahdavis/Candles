@@ -48,7 +48,7 @@ const App = () => {
         <RenderAllCandles setSingleCandle={setSingleCandle}/></Route>
        
        <Route path={`/candles/:${singleCandle.id}`}>
-       <RenderSingleCandle singleCandle={singleCandle} setSingleCandle={setSingleCandle}/></Route>
+       <RenderSingleCandle singleCandle={singleCandle} setSingleCandle={setSingleCandle} isLoggedIn={isLoggedIn}/></Route>
 
        
 
@@ -57,7 +57,7 @@ const App = () => {
       <Route path="/register"><Register setIsLoggedIn={setIsLoggedIn}/></Route>
       <Route path="/login"><Login setToken={setToken} setUserData={setUserData} setIsLoggedIn={setIsLoggedIn} /></Route>
       <Route path="/logout"><Logout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/></Route>
-      <Route path="/cart"><Cart/></Route>
+      <Route path="/cart"><Cart singleCandle={singleCandle}/></Route>
     </div>
   );
 };

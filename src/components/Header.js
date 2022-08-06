@@ -10,7 +10,10 @@ const Header = ({isLoggedIn}) => {
                 <div className='header__nav'>
                     <Link className='nav_link' to="/">Home</Link> 
                     <Link className='nav_link' to="/candles">Shop</Link>
-                    <Link className='nav_link' to="/cart">Cart</Link>
+                    
+                    {isLoggedIn ? 
+                    <Link className='nav_link' to="/cart">Cart</Link> :
+                    ''}
                     
                     {isLoggedIn ?  
                     <Link className='nav_link' to="/logout">Logout</Link> :

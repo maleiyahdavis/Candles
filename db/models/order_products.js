@@ -16,7 +16,7 @@ async function getOrderProductById(id) {
 }
 
 async function addProductToOrder({productId, orderId, price, quantity}) {
-    //console.log(productId, orderId, price, quantity)
+    console.log(productId, orderId, price, quantity)
     try{
         const {rows:[orderWithProducts]} = await client.query(`
             INSERT INTO order_products ("productId", "orderId", price, quantity)
@@ -24,7 +24,7 @@ async function addProductToOrder({productId, orderId, price, quantity}) {
             RETURNING *;
         `, [productId, orderId, price, quantity]);
 
-       // console.log("order_products", orderWithProducts);
+        //console.log("order_products", orderWithProducts);
         return orderWithProducts
     } catch(error){
         throw error

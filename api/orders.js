@@ -1,6 +1,7 @@
 const express = require('express');
 const ordersRouter = express.Router();
 const {getAllOrders, createOrder, getCartByUser,updatedOrder, cancelOrder} = require("../db/models/orders")
+const {addProductToOrder} = require("../db/models/order_products")
 
 //GET api/orders
 ordersRouter.get('/', async (req, res) => {
@@ -28,12 +29,38 @@ ordersRouter.post('/cart', async(req,res) => {
 })
 
 
+// async function addProductToOrder({productId, orderId, price, quantity}) {
+//     //console.log(productId, orderId, price, quantity)
+//     try{
+//         const {rows:[orderWithProducts]} = await client.query(`
+//             INSERT INTO order_products ("productId", "orderId", price, quantity)
+//             VALUES ($1, $2, $3, $4)
+//             RETURNING *;
+//         `, [productId, orderId, price, quantity]);
+
+//        // console.log("order_products", orderWithProducts);
+//         return orderWithProducts
+//     } catch(error){
+//         throw error
+//     }
+// }
+
+
 //POST api/orders  NOT TESTED
 ordersRouter.post('/', async (req, res) => {
+    console.log(req.body)
     try {
-        const order = await createOrder(req.body);
+
+            const {status} = req.body.order;
+            const {userId} = req.body.user;
+            const {productId, price, quantity} = req.body.candle
+            
+            console.log(status, userId, productId, price, quantity)
+
+        const order = await createOrder({status, userId, productId, price, quantity});
+       // const orderId = order.id
     
-        res.send(order);
+        res.send("You added the product to your order!");
     
     } catch (error) {
         console.error(error);
@@ -42,8 +69,10 @@ ordersRouter.post('/', async (req, res) => {
 
 //POST api/orders/:orderId/products 
 ordersRouter.post('/:orderId/products', async (req,res) => {
-    const {orderId} = req.params
+    //const {orderId} = req.params
     try{
+       // const {productId, price, quantity} = req.body.candle
+       // const addProduct = await addProductToOrder({productId, orderId, price, quantity})
         //add single product to order (using order_products)
         //prevent duplication on orderId or productID pair
         //if product already exists on order, increment quantity and update price
