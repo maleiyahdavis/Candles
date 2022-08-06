@@ -1,4 +1,4 @@
-const BASE_URL = process.env.DATABASE_URL  || 'http://localhost:4000';
+const BASE_URL = 'https://lit-coast-12281.herokuapp.com/api'  || 'http://localhost:4000';
 //'https://lit-coast-12281.herokuapp.com'
 //
 //|| 'postgres://localhost:5432/candles-dev';
