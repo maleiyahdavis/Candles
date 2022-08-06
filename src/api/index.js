@@ -8,7 +8,7 @@ const BASE_URL = 'https://lit-coast-12281.herokuapp.com/api'  || 'http://localho
 
 export const fetchCandles = async () => {
    try {
-     const response = await fetch(`${BASE_URL}/api/candles`,{
+     const response = await fetch(`${BASE_URL}/candles`,{
        headers: {
            'Content-Type': 'application/json'
        }
@@ -26,7 +26,7 @@ export const fetchCandles = async () => {
 
  export const fetchSingleCandle = async (id) => {
     try {
-      const response = await fetch(`${BASE_URL}/api/candles/${id}`,{
+      const response = await fetch(`${BASE_URL}/candles/${id}`,{
         headers: {
             'Content-Type': 'application/json'
         }
@@ -45,7 +45,7 @@ export const fetchCandles = async () => {
 const registerUser = async (firstName, lastName, username, password, email) => {
     console.log("input", firstName, lastName, username, password, email)
     try{
-        const response = await fetch(`${BASE_URL}/api/user/register`, {
+        const response = await fetch(`${BASE_URL}/user/register`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ const registerUser = async (firstName, lastName, username, password, email) => {
 
 // const CheckForToken = async (username, password) => {
 //     console.log("checking in here...", username)
-//    const response = await fetch(`${BASE_URL}/api/user/login`, {
+//    const response = await fetch(`${BASE_URL}/user/login`, {
 //         method: "POST",
 //         headers: {
 //             'Content-Type': 'application/json'
