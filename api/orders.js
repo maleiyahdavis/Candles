@@ -60,7 +60,9 @@ ordersRouter.post('/', async (req, res) => {
         const order = await createOrder({status, userId, productId, price, quantity});
        // const orderId = order.id
     
-        res.send("You added the product to your order!");
+        res.send({
+            message: "You added the product to your order!"
+        });
     
     } catch (error) {
         console.error(error);

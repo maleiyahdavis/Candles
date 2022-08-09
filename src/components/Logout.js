@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 //import './Logout.css'
 
-const Logout = ({setIsLoggedIn}) => {
+const Logout = ({setIsLoggedIn, setSingleCandle}) => {
     const history = useHistory();
     
 
@@ -10,6 +10,7 @@ const Logout = ({setIsLoggedIn}) => {
         localStorage.clear(); //for removing the user entirely
         console.log(localStorage)
         setIsLoggedIn(false)
+        setSingleCandle({})
         
     }, [])
 

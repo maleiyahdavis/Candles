@@ -50,12 +50,14 @@ const Login = ({setToken, setUserData, setIsLoggedIn}) => {
                 ></input>
                 <label>Password</label>
                 <input
-                  type="text"
+                  type="password"
                   value={password}
                   placeholder="Enter Password"
                   onChange={(event) => setPassword(event.target.value)}
                 ></input>
                 <button type="submit">Login</button>
+                <br></br>
+                <Link to="/register">Don't have a login? Register here.</Link>
               </form>
             </div>
           );

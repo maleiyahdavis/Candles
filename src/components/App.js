@@ -39,8 +39,8 @@ const App = () => {
     <div className="app-container">
       <Header isLoggedIn={isLoggedIn}/>
       <Route exact path="/" >
-      <h2>Hello!</h2>
-      <p>API Status: {APIHealth}</p>
+      <h1>Do you believe in MAJK?</h1>
+      
       </Route>
       
       
@@ -56,7 +56,7 @@ const App = () => {
      
       <Route path="/register"><Register setIsLoggedIn={setIsLoggedIn}/></Route>
       <Route path="/login"><Login setToken={setToken} setUserData={setUserData} setIsLoggedIn={setIsLoggedIn} /></Route>
-      <Route path="/logout"><Logout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/></Route>
+      <Route path="/logout"><Logout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setSingleCandle={setSingleCandle}/></Route>
       <Route path="/cart"><Cart singleCandle={singleCandle}/></Route>
     </div>
   );

@@ -28,7 +28,7 @@ const RenderSingleCandle = ({singleCandle, setSingleCandle, isLoggedIn}) => {
                       }
                     }),
                   });
-                  const result = response.json();
+                  const result = await response.json();
                  console.log(result);
                  history.push('/cart');
                 

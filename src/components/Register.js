@@ -57,7 +57,7 @@ const Register = ({ action, setToken, setUserData, setIsLoggedIn }) => {
             </fieldset>
             <fieldset className= "auth-comp-input">
               <label htmlFor='password'>Password</label>
-              <input id="password" type="text" placeholder='enter password' value={password} onChange={(event)=>{
+              <input id="password" type="password" placeholder='enter password' value={password} onChange={(event)=>{
                   console.log(event.target.value);
                   setPassword(event.target.value);
               }}></input>
