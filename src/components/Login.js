@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
-import { CheckForToken } from '../api';
 import { useHistory, Link } from 'react-router-dom';
-const jwt = require('jsonwebtoken'); 
-const {JWT_SECRET = 'secret'} = process.env;
+const BASE_URL = 'https://lit-coast-12281.herokuapp.com/api'  || 'http://localhost:4000';
 
 const Login = ({setToken, setUserData, setIsLoggedIn}) => {
         const history = useHistory();
@@ -10,7 +8,7 @@ const Login = ({setToken, setUserData, setIsLoggedIn}) => {
         const [password, setPassword] = useState("");
         const handleSubmit = async (event) => {
             event.preventDefault();
-            const response = await fetch(`http://localhost:4000/api/user/login`, {
+            const response = await fetch(`${BASE_URL}/user/login`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
